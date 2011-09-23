@@ -37,24 +37,16 @@
 (defn app [middleware & forms]
   (let [pairs (partition 2 forms)]
     ((or middleware identity)
-      (fn [{:keys [path-rest] :as path-args}]
-        (loop [[[route handler] & tail] pairs]
-          (if-let [path-args1 (match-route path-rest route)]
-            (handler {:path-args (merge path-args path-args1)})
-            (when (seq tail) (recur tail))))))))
-
-(comment defn app [middleware & forms]
-  (let [pairs (partition 2 forms)]
-    ((or middleware identity)
-      (fn [{:keys [path-rest] :as req}]
-        (loop [[[route handler] & tail] pairs]
-          (if-let [req1 (match-route path-rest route)]
-            (let [path-args (merge (:path-args req) (:path-args req1))]
-              (handler (assoc (merge req req1) :path-args path-args))
-            (do
-              (when (seq tail) (recur tail))))))))))
-
-(defn run-app [handler]
-  (fn [req]
-    (.log js/console "segs" (. js/location pathname))
-    (handler (assoc req :path-rest (uri-segments (. js/location pathname))))))
+      (fn [{:keys [path-args path-rest] :as req}]
+        (let [path-rest (if (or path-args path-rest)
+                          path-rest
+                          (uri-segments (:pathname (:location req))))]
+          (loop [[[route handler] & tail] pairs]
+            (if-let [path-args+rest (match-route path-rest route)]
+              (handler (assoc
+                         req
+                         :path-args (merge
+                                      path-args
+                                      (:path-args path-args+rest))
+                         :path-rest (:path-rest path-args+rest)))
+              (when (seq tail) (recur tail)))))))))
