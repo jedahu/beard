@@ -1,5 +1,9 @@
-(defproject me.panzoo/beard "0.0.2"
+(defproject
+  me.panzoo/beard "0.0.3"
+
   :description "A micro DSL to wire torus handlers and middleware"
-  :dependencies [[org.clojure/clojure "1.2.1"]]
+
+  :dependencies
+  [[me.panzoo/torus "0.0.4"]]
 
   :source-path "cljs/src")

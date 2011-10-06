@@ -28,11 +28,11 @@
                         (recur r (rest segments) (rest route)))
           (regex? x) (when (re-matches x (first segments))
                        (recur r (rest segments) (rest route)))
-          (or (= :& x) (= '& x)) (assoc r :path-rest segments)
+          (or (= :& x) (= '& x)) {:path-args r :path-rest segments}
           :else (when-let [segment (first segments)]
                   (recur (assoc r (first route) segment)
                          (rest segments) (rest route))))
-        (when-not (seq segments) r)))))
+        (when-not (seq segments) {:path-args r})))))
 
 (defn app [middleware & forms]
   (let [pairs (partition 2 forms)]
@@ -49,4 +49,8 @@
                                       path-args
                                       (:path-args path-args+rest))
                          :path-rest (:path-rest path-args+rest)))
-              (when (seq tail) (recur tail)))))))))
+              (if (seq tail)
+                (recur tail)
+                (if (odd? (count forms))
+                  ((last forms) req)
+                  (throw (js/Error. "dispatch error")))))))))))
