@@ -1,9 +1,19 @@
 (defproject
-  me.panzoo/beard "0.0.3"
+  me.panzoo/beard "0.1.0-SNAPSHOT"
+
+  :extra-namespace-dirs ["src"]
 
   :description "A micro DSL to wire torus handlers and middleware"
 
   :dependencies
-  [[me.panzoo/torus "0.0.4"]]
-
-  :source-path "cljs/src")
+  [[jasminejs "0.1.0-SNAPSHOT"]]
+  
+  :cljs
+  {:optimizations :whitespace
+   :pretty-print true
+   :output-to "out/all.js"
+   :output-dir "out"
+   :test-cmd ["phantomjs" "test.js"]}
+  
+  :story
+  {:output "doc/index.html"})

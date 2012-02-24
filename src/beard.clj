@@ -1,5 +1,5 @@
-(ns me.panzoo.beard.macro)
+(ns beard)
 
 (defmacro app [& forms]
   (let [[midware routes] (split-with #(or (symbol? %) (list? %)) forms)]
-    `(me.panzoo.beard/app #(-> % ~@(reverse midware)) ~@routes)))
+    `(beard.core/app #(-> % ~@(reverse midware)) ~@routes)))

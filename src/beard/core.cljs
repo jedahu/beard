@@ -1,4 +1,4 @@
-(ns me.panzoo.beard)
+(ns beard.core)
 
 (defn uri-segments [uri]
   (let [segs (map js/decodeURIComponent (rest (.split uri #"/")))]
@@ -53,4 +53,4 @@
                 (recur tail)
                 (if (odd? (count forms))
                   ((last forms) req)
-                  (throw (js/Error. "dispatch error")))))))))))
+                  nil #_(throw (js/Error. :dispatch-error)))))))))))
