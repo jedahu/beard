@@ -18,7 +18,7 @@
 (defn- regex? [x]
   (instance? js/RegExp x))
 
-(defn- match-route [segments route]
+(defn match-route [segments route]
   (if (and (empty? (doall segments)) (empty? route))
     {}
     (loop [r {} segments segments route route]
@@ -28,7 +28,7 @@
                         (recur r (rest segments) (rest route)))
           (regex? x) (when (re-matches x (first segments))
                        (recur r (rest segments) (rest route)))
-          (or (= :& x) (= '& x)) {:path-args r :path-rest segments}
+          (= '& x) {:path-args r :path-rest segments}
           :else (when-let [segment (first segments)]
                   (recur (assoc r (first route) segment)
                          (rest segments) (rest route))))
@@ -51,6 +51,4 @@
                          :path-rest (:path-rest path-args+rest)))
               (if (seq tail)
                 (recur tail)
-                (if (odd? (count forms))
-                  ((last forms) req)
-                  nil #_(throw (js/Error. :dispatch-error)))))))))))
+                nil))))))))

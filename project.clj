@@ -1,19 +1,16 @@
 (defproject
-  me.panzoo/beard "0.1.0-SNAPSHOT"
-
-  :extra-namespace-dirs ["src"]
+  beard "0.1.0"
 
   :description "A micro DSL to wire torus handlers and middleware"
 
   :dependencies
-  [[jasminejs "0.1.0-SNAPSHOT"]]
-  
-  :cljs
-  {:optimizations :whitespace
-   :pretty-print true
-   :output-to "out/all.js"
-   :output-dir "out"
-   :test-cmd ["phantomjs" "test.js"]}
-  
+  [[menodora "0.1.2"]] 
+
+  :plugins
+  [[lein-cst "0.2.1"]]
+
   :story
-  {:output "doc/index.html"})
+  {:output "doc/index.html"}
+  
+  :cst
+  {:suites [beard.test.client/core-tests]})
